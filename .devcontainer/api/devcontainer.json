@@ -1,0 +1,12 @@
+{
+  "name": "ML Project - API",
+  "dockerComposeFile": "../../docker-compose-dev.yml",
+  "service": "api",
+  "workspaceFolder": "/src",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python"]
+    }
+  },
+  "shutdownAction": "none"
+}

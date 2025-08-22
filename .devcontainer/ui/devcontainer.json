@@ -1,0 +1,12 @@
+{
+  "name": "ML Project - UI",
+  "dockerComposeFile": "../../docker-compose-dev.yml",
+  "service": "ui",
+  "workspaceFolder": "/src",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python"]
+    }
+  },
+  "shutdownAction": "none"
+}

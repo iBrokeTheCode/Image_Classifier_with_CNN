@@ -1,0 +1,12 @@
+{
+  "name": "ML Project - Model",
+  "dockerComposeFile": "../../docker-compose-dev.yml",
+  "service": "model",
+  "workspaceFolder": "/src",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python"]
+    }
+  },
+  "shutdownAction": "none"
+}
