@@ -7,6 +7,7 @@ RUN pip3 install -r requirements.txt
 
 ENV PYTHONPATH=$PYTHONPATH:/src/
 
+# 👇 Uncomment for DEPLOY / Comment for DevContainers
 COPY ./ /src/ 
 
 WORKDIR /src

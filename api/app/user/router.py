@@ -1,4 +1,3 @@
-# from typing import List
 from app import db
 from app.auth.jwt import get_current_user
 from fastapi import APIRouter, Depends, HTTPException, status
