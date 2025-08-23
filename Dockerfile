@@ -13,9 +13,8 @@ COPY src/ ./src/
 
 RUN pip3 install -r requirements.txt
 
-# Set Streamlit config/data folder to a writable path
-ENV HOME=/app
-RUN mkdir -p /app/.streamlit
+RUN mkdir -p /app/.streamlit \
+    && echo "[browser]\ngatherUsageStats = false" > /app/.streamlit/config.toml
 
 EXPOSE 8501
 
