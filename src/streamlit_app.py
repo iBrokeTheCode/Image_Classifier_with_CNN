@@ -1,6 +1,8 @@
 import streamlit as st
 from PIL import Image
 
+from predictor import predict_image
+
 # 📌 PAGE SETUP
 st.set_page_config(page_title="Image Classifier App", page_icon="🤖", layout="centered")
 st.html("""
@@ -79,7 +81,11 @@ with st.container():
             if classify_button:
                 # Check if an image is selected before running prediction
                 if uploaded_image is not None:
-                    st.session_state["selected_image"] = uploaded_image
+                    # st.session_state["selected_image"] = uploaded_image
+                    # Use Image.open() to convert the UploadedFile object into a PIL.Image object
+                    st.session_state["selected_image"] = Image.open(uploaded_image)
+                    st.session_state["uploaded_file"] = uploaded_image
+
                 elif selected_example:
                     # Load the selected example image
                     try:
@@ -96,8 +102,6 @@ with st.container():
                         st.session_state["selected_image"],
                         caption="Image to be classified",
                     )
-                    st.markdown("---")
-                    st.subheader("Prediction")
 
                     # Call the prediction function and display results
                     with st.spinner("Analyzing image..."):
@@ -109,7 +113,7 @@ with st.container():
 
                             st.metric(
                                 label="Prediction",
-                                value=f"Prediction: {predicted_label.replace('_', ' ').title()}",
+                                value=f"{predicted_label.replace('_', ' ').title()}",
                                 delta=f"{predicted_score * 100:.2f}%",
                                 help="The predicted category and its confidence score.",
                                 delta_color="normal",
