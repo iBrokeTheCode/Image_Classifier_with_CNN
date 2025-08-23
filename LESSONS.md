@@ -2,14 +2,15 @@
 
 ## Table of Contents
 
-- [Docker](#1-docker)
-- [Dev Containers](#2-dev-containers)
-- [Redis](#3-redis)
-- [Postgres](#4-postgres)
-- [Unit Tests](#5-unit-tests)
-- [Locust](#6-locust)
-- [AWS](#7-aws)
-- [GitHub Actions](#8-github-actions)
+1. [Docker](#1-docker)
+2. [Dev Containers](#2-dev-containers)
+3. [Redis](#3-redis)
+4. [Postgres](#4-postgres)
+5. [Unit Tests](#5-unit-tests)
+6. [Locust](#6-locust)
+7. [AWS](#7-aws)
+8. [GitHub Actions](#8-github-actions)
+9. [Streamlit](#9-streamlit)
 
 ## 1. Docker
 
@@ -340,3 +341,35 @@ jobs:
 - Runs when you **push or create a pull request** to the `main` branch.
 - Uses **Ubuntu** as the environment.
 - Sets up **Python 3.10**, installs dependencies, and runs **pytest** for tests.
+
+## 9. Streamlit
+
+To fix **telemetry issues** and **403 errors on file uploads** during deployment (Docker/Hugging Face Spaces)., configure Streamlit with a `config.toml` in `/app/.streamlit/`:
+
+```toml
+[browser]
+gatherUsageStats = false
+
+[server]
+enableCORS = false
+enableXsrfProtection = false
+```
+
+In Dockerfile:
+
+```dockerfile
+RUN mkdir -p /app/.streamlit /app/tmp
+COPY .streamlit/ /app/.streamlit/
+```
+
+Or generate the same configuration in build stage:
+
+```dockerfile
+RUN mkdir -p /app/.streamlit \
+    && echo "[browser]\n" \
+           "gatherUsageStats = false\n\n" \
+           "[server]\n" \
+           "enableCORS = false\n" \
+           "enableXsrfProtection = false\n" \
+           > /app/.streamlit/config.toml
+```

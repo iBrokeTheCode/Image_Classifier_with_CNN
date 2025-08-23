@@ -7,7 +7,7 @@ sdk: docker
 app_port: 8501
 tags:
   - streamlit
-pinned: false
+pinned: true
 short_description: A CNN-based image classification with TensorFlow
 license: mit
 ---
