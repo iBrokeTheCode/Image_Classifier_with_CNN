@@ -1,0 +1,2 @@
+[global]
+streamlit_write_a_new_metrics_file_to_disk = false
