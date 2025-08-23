@@ -14,6 +14,7 @@ st.html("""
 <style>
     .stMainBlockContainer {
         max-width: 70rem;
+        padding-bottom: 1rem;
     }
 </style>
 """)
@@ -35,7 +36,9 @@ with st.container():
     st.html("<br>")
 
     # Use tabs for different sections of the app
-    tab_app, tab_description = st.tabs(["**App**", "**Description**"])
+    tab_app, tab_about, tab_architecture = st.tabs(
+        ["**App**", "**About**", "**Architecture**"]
+    )
 
     # 📌 APP TAB
     with tab_app:
@@ -140,29 +143,56 @@ with st.container():
                 st.info("Click 'Classify Image' to see the prediction.")
 
 
-# 📌 DESCRIPTION TAB
-with tab_description:
-    st.header("About This Project", divider=True)
-    st.markdown(
-        """
-        This project showcases a Convolutional Neural Network (CNN) model that automatically
-        classifies images into over 1000 different categories.
+# 📌 ABOUT TAB
+with tab_about:
+    st.header("About This Project")
+    st.markdown("""
+- This project is an **image classification app** powered by a Convolutional Neural Network (CNN).  
+- Simply upload an image, and the app predicts its category from **over 1,000 classes** using a pre-trained **ResNet50** model.  
+- Originally developed as a **multi-service ML system** (FastAPI + Redis + Streamlit), this version has been **adapted into a single Streamlit app** for lightweight, cost-effective deployment on Hugging Face Spaces.  
 
-        ### Original Architecture
-        The original project was built as a multi-service architecture, featuring:
-        * **Streamlit:** For the web user interface.
-        * **FastAPI:** As a RESTful API to handle image processing and model serving.
-        * **Redis:** A message broker for communication between the services.
+### Model & Description  
+- **Model:** ResNet50 (pre-trained on the **ImageNet** dataset with 1,000+ categories).  
+- **Pipeline:** Images are resized, normalized, and passed to the model.  
+- **Output:** The app displays the **Top prediction** with confidence score.  
 
-        ### Portfolio Adaptation
-        For a live and cost-effective demo, this application has been adapted into a single-service
-        solution. The core logic of the FastAPI backend has been integrated directly into
-        the Streamlit app. This demonstrates the ability to adapt a solution for
-        specific deployment and resource constraints.
+[ResNet50](https://www.tensorflow.org/api_docs/python/tf/keras/applications/ResNet50) is widely used in both research and production, making it an excellent showcase of deep learning capabilities and transferable ML skills.  
+""")
 
-        ### Technologies Used
-        * **Streamlit:** For the interactive web interface.
-        * **TensorFlow:** For loading and running the pre-trained CNN model.
-        * **Pre-trained Model:** ResNet50 with weights trained on the ImageNet dataset.
-        """
-    )
+with tab_architecture:
+    with st.expander("🛠️ View Original System Architecture"):
+        st.image(
+            image="./src/assets/architecture.jpg",
+            caption="Original Microservices Architecture",
+        )
+
+    st.markdown("""
+### Original Architecture  
+- **FastAPI** → REST API for image processing  
+- **Redis** → Message broker for service communication  
+- **Streamlit** → Interactive web UI  
+- **TensorFlow** → Deep learning inference engine  
+- **Locust** → Load testing & benchmarking  
+- **Docker Compose** → Service orchestration  
+
+### Simplified Version  
+- **Streamlit only** → UI and model combined in a single app  
+- **TensorFlow (ResNet50)** → Core prediction engine  
+- **Docker** → Containerized for Hugging Face Spaces deployment  
+
+This evolution demonstrates the ability to design a **scalable microservices system** and also **adapt it into a lightweight single-service solution** for cost-effective demos.  
+""")
+
+
+# 📌 FOOTER
+st.divider()
+st.markdown(
+    """
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+        <b>Connect with me:</b> 💼 <a href="https://www.linkedin.com/in/alex-turpo/" target="_blank">LinkedIn</a> • 
+        🐱 <a href="https://github.com/iBrokeTheCode" target="_blank">GitHub</a> • 
+        🤗 <a href="https://huggingface.co/iBrokeTheCode" target="_blank">Hugging Face</a>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
