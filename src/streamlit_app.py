@@ -49,7 +49,7 @@ with st.container():
             # File uploader widget
             uploaded_file = st.file_uploader(
                 label="Drag and drop an image here or click to browse",
-                type=["jpg", "jpeg", "png"],
+                type=["jpg", "jpeg", "png", "webp", "avif"],
                 help="Maximum file size is 200MB",
                 key="image_uploader",
             )
@@ -111,7 +111,7 @@ with st.container():
 
             # If the button is clicked, run the prediction logic
             if classify_button and image_to_process:
-                with st.spinner("Analyzing image..."):
+                with st.spinner(text="🧠 Analyzing image..."):
                     try:
                         from predictor import predict_image
 
