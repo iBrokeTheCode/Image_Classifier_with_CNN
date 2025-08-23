@@ -13,8 +13,14 @@ COPY src/ ./src/
 
 RUN pip3 install -r requirements.txt
 
+# 📌 Streamlit configuration (For deployment)
 RUN mkdir -p /app/.streamlit \
-    && echo "[browser]\ngatherUsageStats = false" > /app/.streamlit/config.toml
+    && echo "[browser]\n" \
+           "gatherUsageStats = false\n\n" \
+           "[server]\n" \
+           "enableCORS = false\n" \
+           "enableXsrfProtection = false\n" \
+           > /app/.streamlit/config.toml
 
 EXPOSE 8501
 
