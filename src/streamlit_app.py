@@ -1,7 +1,12 @@
+import os
+
 import streamlit as st
 from PIL import Image
 
 from predictor import predict_image
+
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+ASSETS_DIR = os.path.join(APP_DIR, "assets")
 
 # 📌 PAGE SETUP
 st.set_page_config(page_title="Image Classifier App", page_icon="🤖", layout="centered")
@@ -15,10 +20,12 @@ st.html("""
 
 # 📌 INITIALIZE SESSION STATE
 # We initialize session state variables to manage app state
-if "selected_image" not in st.session_state:
-    st.session_state["selected_image"] = None
-if "prediction_placeholder" not in st.session_state:
-    st.session_state["prediction_placeholder"] = {"label": "A Dog", "score": 0.9558}
+if "uploaded_image" not in st.session_state:
+    st.session_state["uploaded_image"] = None
+if "example_selected" not in st.session_state:
+    st.session_state["example_selected"] = False
+if "prediction_result" not in st.session_state:
+    st.session_state["prediction_result"] = None
 
 # 📌 MAIN APP LAYOUT
 with st.container():
@@ -41,12 +48,18 @@ with st.container():
             st.header("Upload an Image", divider=True)
 
             # File uploader widget
-            uploaded_image = st.file_uploader(
+            uploaded_file = st.file_uploader(
                 label="Drag and drop an image here or click to browse",
                 type=["jpg", "jpeg", "png"],
                 help="Maximum file size is 200MB",
                 key="image_uploader",
             )
+
+            # Update state when a new file is uploaded
+            if uploaded_file is not st.session_state.uploaded_image:
+                st.session_state.uploaded_image = uploaded_file
+                st.session_state.example_selected = False
+                st.session_state.prediction_result = None
 
             st.html("<br>")
             st.subheader("Or Try an Example", divider=True)
@@ -73,57 +86,60 @@ with st.container():
         with col_results:
             st.header("Results", divider=True)
 
-            # This message is shown before any image is processed
-            if st.session_state["selected_image"] is None and not classify_button:
-                st.info("Choose an image to get a prediction.")
+            image_to_process = None
 
-            # If the button is clicked, run the prediction logic
-            if classify_button:
-                # Check if an image is selected before running prediction
-                if uploaded_image is not None:
-                    # st.session_state["selected_image"] = uploaded_image
-                    # Use Image.open() to convert the UploadedFile object into a PIL.Image object
-                    st.session_state["selected_image"] = Image.open(uploaded_image)
-                    st.session_state["uploaded_file"] = uploaded_image
-
-                elif selected_example:
-                    # Load the selected example image
-                    try:
-                        img_path = f"./assets/{selected_example.lower()}.jpg"
-                        st.session_state["selected_image"] = Image.open(img_path)
-                    except FileNotFoundError:
-                        st.error(
-                            f"Error: The example image '{selected_example.lower()}.jpg' was not found."
-                        )
-                        st.stop()
-
-                if st.session_state["selected_image"] is not None:
-                    st.image(
-                        st.session_state["selected_image"],
-                        caption="Image to be classified",
+            # Logic to handle which image to display
+            if st.session_state.uploaded_image:
+                # Get the image from the uploaded file
+                image_to_process = Image.open(st.session_state.uploaded_image)
+            elif selected_example:
+                # Load the selected example image using a robust path
+                try:
+                    img_path = os.path.join(
+                        ASSETS_DIR, f"{selected_example.lower()}.jpg"
                     )
+                    image_to_process = Image.open(img_path)
+                except FileNotFoundError:
+                    st.error(
+                        f"Error: The example image '{selected_example.lower()}.jpg' was not found."
+                    )
+                    st.stop()
 
-                    # Call the prediction function and display results
+            # Display image and run prediction when button is clicked
+            if image_to_process:
+                st.image(image_to_process, caption="Image to be classified")
+
+                if classify_button:
+                    # Run the prediction logic
                     with st.spinner("Analyzing image..."):
-                        # Call our modularized prediction function!
                         try:
-                            predicted_label, predicted_score = predict_image(
-                                st.session_state["selected_image"]
-                            )
+                            # 📌 Prediction function call 📌
+                            from predictor import predict_image
 
-                            st.metric(
-                                label="Prediction",
-                                value=f"{predicted_label.replace('_', ' ').title()}",
-                                delta=f"{predicted_score * 100:.2f}%",
-                                help="The predicted category and its confidence score.",
-                                delta_color="normal",
+                            predicted_label, predicted_score = predict_image(
+                                image_to_process
                             )
-                            st.balloons()
+                            st.session_state.prediction_result = {
+                                "label": predicted_label.replace("_", " ").title(),
+                                "score": predicted_score,
+                            }
                         except Exception as e:
                             st.error(f"An error occurred during prediction: {e}")
-                else:
-                    st.error("Please upload an image or select an example to classify.")
 
+                # Display the prediction result if available
+                if st.session_state.prediction_result:
+                    st.metric(
+                        label="Prediction",
+                        value=st.session_state.prediction_result["label"],
+                        delta=f"{st.session_state.prediction_result['score'] * 100:.2f}%",
+                        help="The predicted category and its confidence score.",
+                        delta_color="normal",
+                    )
+                    st.balloons()
+                else:
+                    st.info("Click 'Classify Image' to see the prediction.")
+            else:
+                st.info("Choose an image to get a prediction.")
 
 # 📌 DESCRIPTION TAB
 with tab_description:
