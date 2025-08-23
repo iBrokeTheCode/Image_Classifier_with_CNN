@@ -13,6 +13,10 @@ COPY src/ ./src/
 
 RUN pip3 install -r requirements.txt
 
+# Set Streamlit config/data folder to a writable path
+ENV STREAMLIT_HOME=/app/.streamlit
+RUN mkdir -p /app/.streamlit
+
 EXPOSE 8501
 
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
