@@ -14,7 +14,7 @@ COPY src/ ./src/
 RUN pip3 install -r requirements.txt
 
 # Set Streamlit config/data folder to a writable path
-ENV STREAMLIT_HOME=/app/.streamlit
+ENV HOME=/app
 RUN mkdir -p /app/.streamlit
 
 EXPOSE 8501
