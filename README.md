@@ -20,7 +20,7 @@ license: mit
 2. [Methodology & Key Features](#2-methodology--key-features)
 3. [Technology Stack](#3-technology-stack)
 4. [Deployment Options](#4-deployment-options)
-5. [Dataset](#5-dataset)
+5. [Model](#5-model)
 
 ## 1. Project Description
 
@@ -166,7 +166,7 @@ The repository also contains **Dockerfiles** for each service.
    http://localhost:8000/docs
    ```
 
-## 5. Dataset
+## 5. Model
 
 This project uses the pre-training model ResNet50.
 
